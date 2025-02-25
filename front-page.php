@@ -13,16 +13,3 @@ get_header(); // incluye header.php si lo has creado
 
 <?php
 get_footer(); // incluye footer.php si lo has creado
-
-$args = array(
-    'post_type' => 'paquete_turistico',
-    'posts_per_page' => 3
-  );
-  $query = new WP_Query($args);
-  if($query->have_posts()):
-    while($query->have_posts()): $query->the_post();
-      the_title('<h2 class="text-2xl font-bold">','</h2>');
-      // ...
-    endwhile;
-    wp_reset_postdata();
-  endif;
