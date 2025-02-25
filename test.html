@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video de Fondo Sin Franjas Negras</title>
+  <style>
+    /* Elimina márgenes y asegura que html y body ocupen todo el viewport */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    /* Estilos para el video de fondo */
+    #bgVideo {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover; /* Hace que el video cubra todo sin distorsionarse */
+      z-index: -1;
+    }
+    /* Contenedor para el contenido sobre el video */
+    .content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      text-align: center;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Video de fondo: reemplaza "ruta_del_video.mp4" por la ruta de tu archivo -->
+  <video autoplay muted loop id="bgVideo">
+    
+    <source src="http://localhost:8080/wp-content/themes/enlaceagil-theme/assets/videos/video.mp4" type="video/mp4">
+    Tu navegador no soporta la etiqueta de video.
+  </video>
+
+
+  <!-- Contenido sobre el video -->
+  <div class="content">
+    <h1>Bienvenido</h1>
+    <p>Este es un ejemplo de video de fondo sin franjas negras.</p>
+  </div>
+</body>
+</html>
