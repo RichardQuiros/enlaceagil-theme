@@ -1,56 +1,159 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video de Fondo Sin Franjas Negras</title>
-  <style>
-    /* Elimina márgenes y asegura que html y body ocupen todo el viewport */
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-    }
-    /* Estilos para el video de fondo */
-    #bgVideo {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      min-width: 100%;
-      min-height: 100%;
-      width: auto;
-      height: auto;
-      transform: translate(-50%, -50%);
-      object-fit: cover; /* Hace que el video cubra todo sin distorsionarse */
-      z-index: -1;
-    }
-    /* Contenedor para el contenido sobre el video */
-    .content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      text-align: center;
-      z-index: 1;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FullCalendar con Tooltip</title>
+    <script src="https://cdn.jsdelivr.net/npm/rrule@2.6.8/dist/es5/rrule.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/rrule"></script>
+
+
+    <!-- Floating UI -->
+    <script src="https://cdn.jsdelivr.net/npm/@floating-ui/core@1.6.9"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@floating-ui/dom@1.6.13"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #calendar {
+            max-width: 900px;
+            margin: auto;
+        }
+        /* Estilos del Tooltip */
+        #tooltip {
+            position: absolute;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e5e7eb;
+            width: 220px;
+            display: none;
+            z-index: 1000;
+        }
+        #tooltip h3 {
+            font-size: 16px;
+            font-weight: bold;
+            color: #10b981;
+        }
+        #tooltip p {
+            font-size: 14px;
+            color: #4b5563;
+            margin: 4px 0;
+        }
+        #tooltip .tooltip-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+        #tooltip .tooltip-actions a {
+            text-decoration: none;
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-reservar {
+            background-color: #10b981;
+            color: white;
+        }
+        .btn-detalles {
+            background-color: #3b82f6;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-  <!-- Video de fondo: reemplaza "ruta_del_video.mp4" por la ruta de tu archivo -->
-  <video autoplay muted loop id="bgVideo">
-    
-    <source src="http://localhost:8080/wp-content/themes/enlaceagil-theme/assets/videos/video.mp4" type="video/mp4">
-    Tu navegador no soporta la etiqueta de video.
-  </video>
 
+    <h1>Calendario de Eventos</h1>
+    <div id="calendar"></div>
 
-  <!-- Contenido sobre el video -->
-  <div class="content">
-    <h1>Bienvenido</h1>
-    <p>Este es un ejemplo de video de fondo sin franjas negras.</p>
-  </div>
+    <!-- Tooltip -->
+    <div id="tooltip">
+        <h3 id="tooltip-title"></h3>
+        <p id="tooltip-description"></p>
+        <p><strong>📅 Fecha:</strong> <span id="tooltip-date"></span></p>
+        <p><strong>⏰ Horario:</strong> <span id="tooltip-time"></span></p>
+        <div class="tooltip-actions">
+            <a href="#" id="tooltip-reservar" class="btn-reservar">Reservar</a>
+            <a href="#" id="tooltip-detalles" class="btn-detalles">Ver Detalles</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var calendarEl = document.getElementById("calendar");
+            var tooltipEl = document.getElementById("tooltip");
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: "dayGridMonth",
+                locale: "es",
+                height: "auto",
+                headerToolbar: {
+                    left: "prev,next today",
+                    center: "title",
+                    right: "dayGridMonth,timeGridWeek"
+                },
+                events: [
+                    {
+                        title: "Tour de Playa",
+                        start: "2025-04-15T10:00:00",
+                        end: "2025-04-15T12:00:00",
+                        description: "Recorrido guiado por la playa con expertos en ecoturismo.",
+                        url: "https://tours.com/reserva/1",
+                        detailsUrl: "https://tours.com/detalles/1",
+                        color: "#10b981"
+                    },
+                    {
+                        title: "Aventura en la Montaña",
+                        start: "2025-04-20T09:00:00",
+                        end: "2025-04-20T18:00:00",
+                        description: "Explora la montaña con actividades extremas y senderismo.",
+                        url: "https://tours.com/reserva/2",
+                        detailsUrl: "https://tours.com/detalles/2",
+                        color: "#f59e0b"
+                    }
+                ],
+                eventMouseEnter: async function (info) {
+                    // Llenar datos del Tooltip
+                    document.getElementById("tooltip-title").textContent = info.event.title;
+                    document.getElementById("tooltip-description").textContent = info.event.extendedProps.description;
+                    document.getElementById("tooltip-date").textContent = new Date(info.event.start).toLocaleDateString();
+                    document.getElementById("tooltip-time").textContent = 
+                        new Date(info.event.start).toLocaleTimeString() + " - " + 
+                        new Date(info.event.end).toLocaleTimeString();
+                    document.getElementById("tooltip-reservar").href = info.event.url;
+                    document.getElementById("tooltip-detalles").href = info.event.extendedProps.detailsUrl;
+
+                    // Posicionar el Tooltip con Floating UI
+                    const { computePosition, autoPlacement, offset } = window.FloatingUIDOM;
+                    debugger;
+                    const position = await computePosition(info.el, tooltipEl, {
+                        placement: "top",
+                        middleware: [offset(10), autoPlacement()]
+                    });
+
+                    Object.assign(tooltipEl.style, {
+                        left: `${position.x}px`,
+                        top: `${position.y}px`,
+                        display: "block"
+                    });
+
+                    tooltipEl.classList.remove("hidden");
+                },
+                eventMouseLeave: function () {
+                    // Ocultar tooltip
+                    tooltipEl.classList.add("hidden");
+                    tooltipEl.style.display = "none";
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+
 </body>
 </html>
