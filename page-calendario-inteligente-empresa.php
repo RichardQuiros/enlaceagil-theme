@@ -56,9 +56,9 @@ $proximos_eventos = $wpdb->get_results(
         LIMIT 3
     ", $company_id)
 );
-
-get_header();
 ?>
+
+<?php wp_head(); ?>
 <style>
     #calendar-container {
         background: rgba(255, 255, 255, 0.2);
@@ -134,7 +134,7 @@ get_header();
             <p class="text-gray-800 font-semibold">$ Precio: <span id="tooltip-price" class="text-green-600"></span></p>
         </div>
         <div class="mt-4 flex gap-2">
-            <button class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600" onclick="reservePackage()">Reservar Ahora</button>
+            <a id="tooltip-reservation" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 text-center">Reservar Ahora</a>
             <a id="tooltip-details" class='bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 text-center'>Ver Detalles</a>
     </div>
 </div>
@@ -254,11 +254,6 @@ get_header();
         document.getElementById('tooltip').style.display = 'none';
     }
 
-    function reservePackage() {
-        alert('Reserva confirmada');
-        closeTooltip();
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var tooltipEl = document.getElementById("tooltip");
@@ -300,8 +295,8 @@ get_header();
                 document.getElementById('tooltip-checkout').innerText = event.extendedProps.checkout;
                 document.getElementById('tooltip-cupos').innerText = event.extendedProps.available > 0 ? `Quedan ${event.extendedProps.available} cupos` : "Agotado";
                 document.getElementById('tooltip-details').href = event.extendedProps.url;
+                document.getElementById('tooltip-reservation').href = event.extendedProps.reservation_url;
                 document.getElementById('tooltip-price').href = event.extendedProps.price;
-
                 closeTooltip()
 
                 // Posicionar el Tooltip con Floating UI
@@ -460,7 +455,8 @@ function displayFilteredPackages(packages, formData) {
                 <p class="text-gray-500 text-sm">Cupos disponibles: <strong>${paquete.capacity}</strong></p>
                 <p class="text-gray-500 text-sm">Precio: <strong>$${paquete.price}</strong></p>
                 <div class="mt-3 flex gap-2">
-                    <a href="${paquete.url}" class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-600">Reservar</a>
+                    <a href="${paquete.reservation_url}" class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-600">Reservar</a>
+                    <a href="${paquete.url}" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600">Detalles</a>
                 </div>
             </div>
         `;

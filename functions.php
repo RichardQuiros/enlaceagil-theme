@@ -12,6 +12,8 @@ function enlaceagil_enqueue_assets() {
 }
 add_action('wp_enqueue_scripts', 'enlaceagil_enqueue_assets');
 
+add_theme_support('custom-logo');
+
 function enlaceagil_register_menus() {
     register_nav_menus(array(
       'main_menu' => 'Menú Principal EnlaceAgil'
